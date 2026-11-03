@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule a Ride | swiftCab</title>
+    <link rel="stylesheet" href="css/passenger.css">
+</head>
+
+<body>
+
+<header class="topbar">
+    <nav class="nav">
+
+        <a class="brand" href="passenger-dashboard.html">
+            swift<span>Cab.</span>
+        </a>
+
+        <div class="navlinks">
+            <a href="passenger-dashboard.html" data-page="passenger-dashboard">Dashboard</a>
+            <a href="book-ride.html" data-page="book-ride">Book ride</a>
+            <a href="compare-fares.html" data-page="compare-fares">Compare fares</a>
+            <a href="schedule-ride.html" data-page="schedule-ride">Schedule</a>
+            <a href="preferred-drivers.html" data-page="preferred-drivers">Drivers</a>
+            <a href="ride-history.html" data-page="ride-history">History</a>
+        </div>
+
+    </nav>
+</header>
+
+<main class="container" data-page="schedule-ride">
+
+    <div class="eyebrow">Ride later</div>
+
+    <h1>Schedule a ride</h1>
+
+    <p>Set a future pickup date and time.</p>
+
+    <div class="grid">
+
+        <section class="card span-7">
+
+            <form id="schedule-form">
+
+                <div class="field">
+                    <label for="schedule-pickup">
+                        Pickup location
+                    </label>
+
+                    <input
+                        id="schedule-pickup"
+                        required
+                        placeholder="Pickup address"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="schedule-drop">
+                        Destination
+                    </label>
+
+                    <input
+                        id="schedule-drop"
+                        required
+                        placeholder="Drop address"
+                    >
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="field">
+                        <label for="schedule-date">Date</label>
+
+                        <input
+                            id="schedule-date"
+                            type="date"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="schedule-time">Time</label>
+
+                        <input
+                            id="schedule-time"
+                            type="time"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+                <div class="field">
+
+                    <label for="schedule-vehicle">
+                        Vehicle
+                    </label>
+
+                    <select id="schedule-vehicle">
+
+                        <option>Bike</option>
+                        <option>Auto</option>
+                        <option>Cab</option>
+
+                    </select>
+
+                </div>
+
+                <button type="submit">
+                    Save scheduled ride
+                </button>
+
+            </form>
+
+            <div id="schedule-message"></div>
+
+        </section>
+
+        <section class="card span-5">
+
+            <h2>Heads up</h2>
+
+            <p>
+                Scheduled rides are saved as planned bookings
+                in this Day 1 demo.
+            </p>
+
+            <span class="pill">
+                Future date required
+            </span>
+
+        </section>
+
+    </div>
+
+</main>
+
+<footer class="footer">
+    swiftCab · Passenger portal · Demo interface
+</footer>
+
+<script src="js/passenger.js"></script>
+
+</body>
+</html>

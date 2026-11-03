@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ride History | swiftCab</title>
+    <link rel="stylesheet" href="css/passenger.css">
+</head>
+
+<body>
+
+<header class="topbar">
+    <nav class="nav">
+
+        <a class="brand" href="passenger-dashboard.html">
+            swift<span>Cab.</span>
+        </a>
+
+        <div class="navlinks">
+            <a href="passenger-dashboard.html" data-page="passenger-dashboard">Dashboard</a>
+            <a href="book-ride.html" data-page="book-ride">Book ride</a>
+            <a href="compare-fares.html" data-page="compare-fares">Compare fares</a>
+            <a href="schedule-ride.html" data-page="schedule-ride">Schedule</a>
+            <a href="preferred-drivers.html" data-page="preferred-drivers">Drivers</a>
+            <a href="ride-history.html" data-page="ride-history">History</a>
+        </div>
+
+    </nav>
+</header>
+
+<main class="container" data-page="ride-history">
+
+    <div class="eyebrow">Your trips</div>
+
+    <h1>Ride history</h1>
+
+    <p>
+        A record of your completed and upcoming rides.
+    </p>
+
+    <div class="grid">
+
+        <section class="card span-4">
+
+            <div class="muted">Total money spent</div>
+
+            <div class="stat" id="history-spent">
+                ₹0
+            </div>
+
+        </section>
+
+        <section class="card span-4">
+
+            <div class="muted">Completed rides</div>
+
+            <div class="stat" id="history-count">
+                0
+            </div>
+
+        </section>
+
+        <section class="card span-4">
+
+            <div class="muted">Upcoming rides</div>
+
+            <div class="stat" id="upcoming-count">
+                0
+            </div>
+
+        </section>
+
+        <section class="card span-12">
+
+            <div class="row">
+
+                <h2>All rides</h2>
+
+                <span class="pill">
+                    Demo data + local bookings
+                </span>
+
+            </div>
+
+            <div id="history-table"></div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<footer class="footer">
+    swiftCab · Passenger portal · Demo interface
+</footer>
+
+<script src="js/passenger.js"></script>
+
+</body>
+</html>

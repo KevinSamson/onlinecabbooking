@@ -1,0 +1,277 @@
+:root {
+    --navy: #14213d;
+    --blue: #2563eb;
+    --blue2: #dbeafe;
+    --ink: #172033;
+    --muted: #64748b;
+    --bg: #f5f7fb;
+    --white: #fff;
+    --line: #e5eaf2;
+    --radius: 18px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Inter, Segoe UI, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button, .btn {
+    border: 0;
+    border-radius: 11px;
+    padding: 12px 17px;
+    background: var(--blue);
+    color: white;
+    font-weight: 650;
+    cursor: pointer;
+    display: inline-block;
+}
+
+button:hover, .btn:hover {
+    filter: brightness(.94);
+}
+
+button.secondary, .btn.secondary {
+    background: #e9eef8;
+    color: var(--navy);
+}
+
+.topbar {
+    background: white;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+.nav {
+    max-width: 1150px;
+    margin: auto;
+    padding: 15px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.brand {
+    font-size: 21px;
+    font-weight: 850;
+    color: var(--navy);
+}
+
+.brand span {
+    color: var(--blue);
+}
+
+.navlinks {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.navlinks a {
+    padding: 9px 11px;
+    border-radius: 9px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.navlinks a.active,
+.navlinks a:hover {
+    background: var(--blue2);
+    color: var(--blue);
+}
+
+.container {
+    max-width: 1150px;
+    margin: 34px auto;
+    padding: 0 22px;
+}
+
+.eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--blue);
+    font-weight: 800;
+}
+
+h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    margin: 8px 0;
+}
+
+h2 {
+    font-size: 21px;
+    margin: 0 0 15px;
+}
+
+p {
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 18px;
+}
+
+.card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: 0 7px 24px rgba(15,23,42,.035);
+}
+
+.span-8 { grid-column: span 8; }
+.span-7 { grid-column: span 7; }
+.span-6 { grid-column: span 6; }
+.span-5 { grid-column: span 5; }
+.span-4 { grid-column: span 4; }
+.span-12 { grid-column: span 12; }
+
+.stat {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 8px 0 2px;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.field {
+    display: grid;
+    gap: 7px;
+    margin: 13px 0;
+}
+
+.field label {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.field input,
+.field select,
+.field textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #d9e1ec;
+    border-radius: 10px;
+    font: inherit;
+    background: white;
+    color: var(--ink);
+}
+
+.field input:focus,
+.field select:focus {
+    outline: 3px solid #dbeafe;
+    border-color: var(--blue);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 14px;
+}
+
+.pill {
+    display: inline-block;
+    padding: 6px 10px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.price {
+    font-size: 23px;
+    font-weight: 850;
+}
+
+.ride-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.notice {
+    padding: 13px 15px;
+    border-radius: 12px;
+    background: #eff6ff;
+    color: #1e40af;
+    font-size: 14px;
+    margin: 14px 0;
+}
+
+.success {
+    background: #ecfdf5;
+    color: #166534;
+}
+
+.empty {
+    text-align: center;
+    padding: 28px;
+    color: var(--muted);
+}
+
+.footer {
+    text-align: center;
+    padding: 30px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+@media(max-width:760px) {
+    .nav {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .navlinks {
+        gap: 3px;
+    }
+
+    .navlinks a {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .container {
+        margin: 24px auto;
+    }
+
+    .span-8, .span-7, .span-6,
+    .span-5, .span-4 {
+        grid-column: span 12;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 18px;
+    }
+}

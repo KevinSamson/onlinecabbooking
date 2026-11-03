@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passenger Dashboard | swiftCab</title>
+    <link rel="stylesheet" href="css/passenger.css">
+</head>
+
+<body>
+
+<header class="topbar">
+    <nav class="nav">
+
+        <a class="brand" href="passenger-dashboard.html">
+            swift<span>Cab.</span>
+        </a>
+
+        <div class="navlinks">
+            <a href="passenger-dashboard.html" data-page="passenger-dashboard">Dashboard</a>
+            <a href="book-ride.html" data-page="book-ride">Book ride</a>
+            <a href="compare-fares.html" data-page="compare-fares">Compare fares</a>
+            <a href="schedule-ride.html" data-page="schedule-ride">Schedule</a>
+            <a href="preferred-drivers.html" data-page="preferred-drivers">Drivers</a>
+            <a href="ride-history.html" data-page="ride-history">History</a>
+        </div>
+
+    </nav>
+</header>
+
+<main class="container" data-page="passenger-dashboard">
+
+    <div class="row">
+
+        <div>
+            <div class="eyebrow">Passenger portal</div>
+
+            <h1>Good evening, Alex 👋</h1>
+
+            <p>Where would you like to go today?</p>
+        </div>
+
+        <a class="btn" href="book-ride.html">
+            + Book a ride
+        </a>
+
+    </div>
+
+    <div class="grid" style="margin-top:24px">
+
+        <section class="card span-4">
+            <div class="muted">Total rides</div>
+            <div class="stat" id="total-rides">12</div>
+            <div class="muted">All-time bookings</div>
+        </section>
+
+        <section class="card span-4">
+            <div class="muted">Money spent</div>
+            <div class="stat" id="total-spent">₹2,450</div>
+            <div class="muted">Across completed rides</div>
+        </section>
+
+        <section class="card span-4">
+            <div class="muted">Preferred drivers</div>
+            <div class="stat">03</div>
+            <div class="muted">Saved for future requests</div>
+        </section>
+
+        <section class="card span-7">
+
+            <div class="row">
+                <h2>Quick booking</h2>
+                <span class="pill">Easy & fast</span>
+            </div>
+
+            <p>
+                Enter your pickup and destination to compare
+                available ride options.
+            </p>
+
+            <a class="btn" href="book-ride.html">
+                Start booking
+            </a>
+
+        </section>
+
+        <section class="card span-5">
+
+            <h2>Plan ahead</h2>
+
+            <p>
+                Need a cab later? Schedule your ride
+                for a future date and time.
+            </p>
+
+            <a class="btn secondary" href="schedule-ride.html">
+                Schedule a ride
+            </a>
+
+        </section>
+
+        <section class="card span-12">
+
+            <div class="row">
+                <h2>Recent rides</h2>
+
+                <a class="muted" href="ride-history.html">
+                    View all →
+                </a>
+            </div>
+
+            <div id="dashboard-rides"></div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<footer class="footer">
+    swiftCab · Passenger portal · Demo interface
+</footer>
+
+<script src="js/passenger.js"></script>
+
+</body>
+</html>
