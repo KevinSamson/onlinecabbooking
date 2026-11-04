@@ -9,7 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderRows(tbody, rows, renderer, cols = 5) { tbody.innerHTML = rows.length ? rows.map(renderer).join('') : `<tr><td colspan="${cols}"><div class="empty"><i data-lucide="inbox"></i><h3>Nothing here yet</h3><p>Records will appear here when available.</p></div></td></tr>`; icon(); }
 
   if (page === 'login') $('#login-form').addEventListener('submit', event => { event.preventDefault(); const button = event.target.querySelector('button[type=submit]'); run(async () => {
-    const data = await CabAPI.request('/auth/login', { method:'POST', body:Object.fromEntries(new FormData(event.target)) }); CabAPI.save(data); toast('Signed in successfully.'); location.href = data.user.role === 'admin' ? '/admin-dashboard.html' : data.user.role === 'driver' ? '/driver-verification.html' : '/emergency-contacts.html';
+    const data = await CabAPI.request('/auth/login', { method:'POST', body:Object.fromEntries(new FormData(event.target)) }); CabAPI.save(data); toast('Signed in successfully.'); 
+    
+    location.href = data.user.role === 'admin' ? '/admin-dashboard.html' : data.user.role === 'driver' ? '/driver-dashboard.html' : '/emergency-contacts.html';
   }, button, 'Signing in…'); });
 
   if (page === 'register') $('#register-form').addEventListener('submit', event => { event.preventDefault(); const button = event.target.querySelector('button[type=submit]'); const body = Object.fromEntries(new FormData(event.target)); if (body.password !== body.confirm_password) return toast('Passwords do not match.', 'error'); delete body.confirm_password; run(async () => { await CabAPI.request('/auth/register', { method:'POST', body }); toast('Account created. Sign in now.'); setTimeout(() => location.href = '/login.html', 600); }, button, 'Creating account…'); });

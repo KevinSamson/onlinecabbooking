@@ -5,4 +5,5 @@ router.use('/auth', require('./auth'));
 router.use('/verification', require('./verification'));
 router.use('/admin', require('./admin'));
 router.use('/emergency-contacts', require('./emergency'));
+router.use('/driver', require('./driver'));
 module.exports = router;
