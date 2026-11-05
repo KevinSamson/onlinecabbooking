@@ -1,4 +1,92 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lost & Found | Astercab</title><link rel="stylesheet" href="/css/styles.css"><link rel="stylesheet" href="/css/p4.css"></head><body data-page="lost-found"><header class="nav"><div class="container nav-inner"><a class="brand" href="/"><span class="brand-mark">✦</span>aster<span style="color:var(--accent)">cab</span></a><nav class="nav-links"><a href="/passenger-dashboard.html">Dashboard</a><a href="/track-ride.html">Track</a><a href="/split-fare.html">Split fare</a><a href="/sos.html">SOS</a><a href="/lost-found.html">Lost & Found</a></nav><div class="nav-actions" data-nav-auth></div><button class="icon-btn mobile-toggle" data-menu-toggle aria-label="Open menu">☰</button></div></header><main class="page"><div class="container">
-<div class="page-head"><div><div class="eyebrow">After the journey</div><h1>Lost something?</h1><p class="muted">Submit a report linked to your ride and follow its status.</p></div></div>
-<div class="safety-grid"><section class="card"><form id="lost-form"><div class="form-group"><label for="ride-id">Ride ID</label><input class="input" id="ride-id" type="number" min="1" required></div><div class="form-group"><label for="description">Describe the item</label><textarea id="description" rows="5" minlength="5" maxlength="2000" required placeholder="Item, colour, approximate location in the cab…"></textarea></div><button class="btn btn-primary">Submit report</button></form></section><section class="card"><h3>Your reports</h3><div id="my-reports" class="loading">Loading reports…</div></section></div>
-</div></main><footer class="footer"><div class="container footer-inner"><a class="brand" href="/">astercab</a><span>Thoughtful journeys, every day. © 2026 Astercab</span></div></footer><div class="toast-stack" aria-live="polite"></div><script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script src="/js/api.js"></script><script src="/js/navbar.js"></script><script src="/js/p4.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Lost & Found | Astercab</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/p4.css" />
+  </head>
+  <body data-page="lost-found">
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation"></nav>
+        <div class="nav-actions" data-nav-auth></div>
+        <button
+          class="icon-btn mobile-toggle"
+          type="button"
+          data-menu-toggle
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </header>
+    <main class="page">
+      <div class="container">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">After the journey</div>
+            <h1>Lost something?</h1>
+            <p class="muted">
+              Submit a report linked to your ride and follow its status.
+            </p>
+          </div>
+        </div>
+        <div class="safety-grid">
+          <section class="card">
+            <form id="lost-form">
+              <div class="form-group">
+                <label for="ride-id">Ride ID</label>
+                <input
+                  class="input"
+                  id="ride-id"
+                  type="number"
+                  min="1"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="description">Describe the item</label>
+                <textarea
+                  id="description"
+                  rows="5"
+                  minlength="5"
+                  maxlength="2000"
+                  required
+                  placeholder="Item, colour, approximate location in the cab…"
+                ></textarea>
+              </div>
+              <button class="btn btn-primary">Submit report</button>
+            </form>
+          </section>
+          <section class="card">
+            <h3>Your reports</h3>
+            <div id="my-reports" class="loading">Loading reports…</div>
+          </section>
+        </div>
+      </div>
+    </main>
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <span>Thoughtful journeys, every day. © 2026 Astercab</span>
+      </div>
+    </footer>
+    <div class="toast-stack" aria-live="polite"></div>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/p4.js"></script>
+  </body>
+</html>

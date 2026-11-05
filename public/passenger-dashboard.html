@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Passenger Dashboard | Astercab</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/passenger.css" />
+  </head>
+
+  <body data-page="passenger-dashboard">
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation"></nav>
+        <div class="nav-actions" data-nav-auth></div>
+        <button
+          class="icon-btn mobile-toggle"
+          type="button"
+          data-menu-toggle
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="container" data-page="passenger-dashboard">
+      <div class="row">
+        <div>
+          <div class="eyebrow">Passenger portal</div>
+
+          <h1>
+            Welcome,
+            <span data-passenger-name>passenger</span>
+            👋
+          </h1>
+
+          <p>Where would you like to go today?</p>
+        </div>
+
+        <a class="btn btn-primary" href="book-ride.html">+ Book a ride</a>
+      </div>
+
+      <div class="grid" style="margin-top: 24px">
+        <section class="card span-4">
+          <div class="muted">Total rides</div>
+          <div class="stat" id="total-rides">12</div>
+          <div class="muted">All-time bookings</div>
+        </section>
+
+        <section class="card span-4">
+          <div class="muted">Money spent</div>
+          <div class="stat" id="total-spent">₹2,450</div>
+          <div class="muted">Across completed rides</div>
+        </section>
+
+        <section class="card span-4">
+          <div class="muted">Preferred drivers</div>
+          <div class="stat"><a href="/preferred-drivers.html">Manage</a></div>
+          <div class="muted">Saved for future requests</div>
+        </section>
+
+        <section class="card span-7">
+          <div class="row">
+            <h2>Quick booking</h2>
+            <span class="pill">Easy & fast</span>
+          </div>
+
+          <p>
+            Enter your pickup and destination to compare available ride options.
+          </p>
+
+          <a class="btn btn-primary" href="book-ride.html">Start booking</a>
+        </section>
+
+        <section class="card span-5">
+          <h2>Plan ahead</h2>
+
+          <p>
+            Need a cab later? Schedule your ride for a future date and time.
+          </p>
+
+          <a class="btn btn-outline" href="schedule-ride.html">
+            Schedule a ride
+          </a>
+        </section>
+
+        <section class="card span-12">
+          <h2>Safety & support</h2>
+          <p>
+            <a href="/emergency-contacts.html">Emergency contacts</a>
+            ·
+            <a href="/track-ride.html">Live tracking</a>
+            ·
+            <a href="/sos.html">SOS</a>
+            ·
+            <a href="/split-fare.html">Fare split</a>
+            ·
+            <a href="/lost-found.html">Lost & Found</a>
+          </p>
+        </section>
+
+        <section class="card span-12">
+          <div class="row">
+            <h2>Recent rides</h2>
+
+            <a class="muted" href="ride-history.html">View all →</a>
+          </div>
+
+          <div id="dashboard-rides"></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <span>Thoughtful journeys, every day. © 2026 Astercab</span>
+      </div>
+    </footer>
+
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/passenger.js"></script>
+  </body>
+</html>

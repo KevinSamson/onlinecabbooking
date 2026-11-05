@@ -1,1 +1,136 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Astercab — a better way to move."><title>Driver verification | Astercab</title><link rel="stylesheet" href="/css/styles.css"></head><body data-page="driver-verification"><header class="nav"><div class="container nav-inner"><a class="brand" href="/"><span class="brand-mark"><i data-lucide="route" size="20"></i></span>aster<span style="color:var(--accent)">cab</span></a><nav class="nav-links"><a href="/">Home</a><a href="/#features">Why Aster</a><a href="/driver-verification.html">Drive with us</a></nav><div class="nav-actions" data-nav-auth></div><button class="icon-btn mobile-toggle" data-menu-toggle aria-label="Open menu"><i data-lucide="menu"></i></button></div></header><main class="page"><div class="container"><div class="page-head"><div><div class="eyebrow">Driver onboarding</div><h1>Verify your identity.</h1><p class="muted">Help us make every journey feel safer.</p></div><span class="badge badge-pending">Secure review</span></div><div style="display:grid;grid-template-columns:minmax(0,2fr) minmax(220px,1fr);gap:20px" class="verification-layout"><div class="card"><h3>Upload your documents</h3><p class="card-sub">Clear, readable files help us review your application quickly.</p><div id="verification-status" class="loading">Checking status…</div><form id="verification-form"><div class="form-group"><label for="licence_number">Driver's licence number</label><input class="input" id="licence_number" name="licence_number" required minlength="4" maxlength="80" placeholder="Enter your licence number"></div><div class="upload-grid"><div class="form-group"><label>Government identity document</label><div class="upload-zone"><i data-lucide="scan-face" size="28"></i><strong>Choose or drop a file</strong><small>JPG, PNG or PDF · max 5 MB</small><input type="file" name="identity_document" accept="image/jpeg,image/png,application/pdf" required></div></div><div class="form-group"><label>Driving licence</label><div class="upload-zone"><i data-lucide="id-card" size="28"></i><strong>Choose or drop a file</strong><small>JPG, PNG or PDF · max 5 MB</small><input type="file" name="licence_document" accept="image/jpeg,image/png,application/pdf" required></div></div></div><button class="btn btn-primary" type="submit">Submit for review <i data-lucide="arrow-right" size="18"></i></button></form></div><aside class="card" style="align-self:start"><div class="feature-icon"><i data-lucide="shield-check"></i></div><h3>What happens next?</h3><p class="muted">Our team checks your identity and licence. You can return here to see the result. Approved drivers can then work with vehicle authorization and ride requests.</p><div class="divider"></div><p class="form-note">Documents are available only to admins reviewing your application.</p></aside></div></div></main><footer class="footer"><div class="container footer-inner"><a class="brand" href="/"><span class="brand-mark"><i data-lucide="route" size="20"></i></span>astercab</a><span>Thoughtful journeys, every day. © 2026 Astercab</span><span>Built with OpenStreetMap</span></div></footer><div class="toast-stack" aria-live="polite"></div><script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script src="/js/api.js"></script><script src="/js/navbar.js"></script><script src="/js/app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="Astercab — a better way to move." />
+    <title>Driver verification | Astercab</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body data-page="driver-verification">
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation"></nav>
+        <div class="nav-actions" data-nav-auth></div>
+        <button
+          class="icon-btn mobile-toggle"
+          type="button"
+          data-menu-toggle
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </header>
+    <main class="page">
+      <div class="container">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">Driver onboarding</div>
+            <h1>Verify your identity.</h1>
+            <p class="muted">Help us make every journey feel safer.</p>
+          </div>
+          <span class="badge badge-pending">Secure review</span>
+        </div>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
+            gap: 20px;
+          "
+          class="verification-layout"
+        >
+          <div class="card">
+            <h3>Upload your documents</h3>
+            <p class="card-sub">
+              Clear, readable files help us review your application quickly.
+            </p>
+            <div id="verification-status" class="loading">Checking status…</div>
+            <form id="verification-form">
+              <div class="form-group">
+                <label for="licence_number">Driver's licence number</label>
+                <input
+                  class="input"
+                  id="licence_number"
+                  name="licence_number"
+                  required
+                  minlength="4"
+                  maxlength="80"
+                  placeholder="Enter your licence number"
+                />
+              </div>
+              <div class="upload-grid">
+                <div class="form-group">
+                  <label>Government identity document</label>
+                  <div class="upload-zone">
+                    <i data-lucide="scan-face" size="28"></i>
+                    <strong>Choose or drop a file</strong>
+                    <small>JPG, PNG or PDF · max 5 MB</small>
+                    <input
+                      type="file"
+                      name="identity_document"
+                      accept="image/jpeg,image/png,application/pdf"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Driving licence</label>
+                  <div class="upload-zone">
+                    <i data-lucide="id-card" size="28"></i>
+                    <strong>Choose or drop a file</strong>
+                    <small>JPG, PNG or PDF · max 5 MB</small>
+                    <input
+                      type="file"
+                      name="licence_document"
+                      accept="image/jpeg,image/png,application/pdf"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-primary" type="submit">
+                Submit for review
+                <i data-lucide="arrow-right" size="18"></i>
+              </button>
+            </form>
+          </div>
+          <aside class="card" style="align-self: start">
+            <div class="feature-icon"><i data-lucide="shield-check"></i></div>
+            <h3>What happens next?</h3>
+            <p class="muted">
+              Our team checks your identity and licence. You can return here to
+              see the result. Approved drivers can then work with vehicle
+              authorization and ride requests.
+            </p>
+            <div class="divider"></div>
+            <p class="form-note">
+              Documents are available only to admins reviewing your application.
+            </p>
+          </aside>
+        </div>
+      </div>
+    </main>
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a class="brand" href="/">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          astercab
+        </a>
+        <span>Thoughtful journeys, every day. © 2026 Astercab</span>
+        <span>Built with OpenStreetMap</span>
+      </div>
+    </footer>
+    <div class="toast-stack" aria-live="polite"></div>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

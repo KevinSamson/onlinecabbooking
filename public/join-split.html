@@ -1,4 +1,66 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Join fare split | Astercab</title><link rel="stylesheet" href="/css/styles.css"><link rel="stylesheet" href="/css/p4.css"></head><body data-page="join-split"><header class="nav"><div class="container nav-inner"><a class="brand" href="/"><span class="brand-mark">✦</span>aster<span style="color:var(--accent)">cab</span></a><nav class="nav-links"><a href="/passenger-dashboard.html">Dashboard</a><a href="/track-ride.html">Track</a><a href="/split-fare.html">Split fare</a><a href="/sos.html">SOS</a><a href="/lost-found.html">Lost & Found</a></nav><div class="nav-actions" data-nav-auth></div><button class="icon-btn mobile-toggle" data-menu-toggle aria-label="Open menu">☰</button></div></header><main class="page"><div class="container">
-<div class="page-head"><div><div class="eyebrow">Shared journey</div><h1>Join a fare split.</h1><p class="muted">Sign in with the email address that received this invitation.</p></div></div>
-<section class="card" style="max-width:700px"><div id="invite-details" class="loading">Loading invitation…</div><button class="btn btn-primary" id="join-button" hidden>Join this split</button></section>
-</div></main><footer class="footer"><div class="container footer-inner"><a class="brand" href="/">astercab</a><span>Thoughtful journeys, every day. © 2026 Astercab</span></div></footer><div class="toast-stack" aria-live="polite"></div><script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script src="/js/api.js"></script><script src="/js/navbar.js"></script><script src="/js/p4.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Join fare split | Astercab</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/p4.css" />
+  </head>
+  <body data-page="join-split">
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation"></nav>
+        <div class="nav-actions" data-nav-auth></div>
+        <button
+          class="icon-btn mobile-toggle"
+          type="button"
+          data-menu-toggle
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </header>
+    <main class="page">
+      <div class="container">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">Shared journey</div>
+            <h1>Join a fare split.</h1>
+            <p class="muted">
+              Sign in with the email address that received this invitation.
+            </p>
+          </div>
+        </div>
+        <section class="card" style="max-width: 700px">
+          <div id="invite-details" class="loading">Loading invitation…</div>
+          <button class="btn btn-primary" id="join-button" hidden>
+            Join this split
+          </button>
+        </section>
+      </div>
+    </main>
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <span>Thoughtful journeys, every day. © 2026 Astercab</span>
+      </div>
+    </footer>
+    <div class="toast-stack" aria-live="polite"></div>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/p4.js"></script>
+  </body>
+</html>

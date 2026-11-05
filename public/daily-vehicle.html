@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Astercab · Driver</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  </head>
+  <body data-page="daily-vehicle">
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation"></nav>
+        <div class="nav-actions" data-nav-auth></div>
+        <button
+          class="icon-btn mobile-toggle"
+          type="button"
+          data-menu-toggle
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </header>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="side-title">Driver workspace</div>
+        <nav data-driver-nav></nav>
+        <div class="divider"></div>
+        <a class="side-link" href="/driver-verification.html">
+          <i data-lucide="shield-check"></i>
+          Verification
+        </a>
+        <button class="side-link" data-logout>
+          <i data-lucide="log-out"></i>
+          Sign out
+        </button>
+      </aside>
+      <main class="dashboard-main">
+        <div class="dashboard-top">
+          <div>
+            <div class="eyebrow">Astercab driver</div>
+            <h1 id="driver-title">Choose today’s vehicle</h1>
+          </div>
+          <div class="user-chip" data-user-chip></div>
+        </div>
+        <div class="card">
+          <h3>Your selected vehicle</h3>
+          <div id="daily-current"></div>
+          <form id="daily-form">
+            <div class="form-group">
+              <label>Approved vehicle</label>
+              <select class="select" id="vehicle-options" required>
+                <option>Loading…</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" type="submit">
+              Save today's vehicle
+            </button>
+          </form>
+        </div>
+      </main>
+    </div>
+    <script src="/js/api.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/driver.js"></script>
+  </body>
+</html>

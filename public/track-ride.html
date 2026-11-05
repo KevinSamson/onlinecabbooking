@@ -1,4 +1,136 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Live ride tracking | Astercab</title><link rel="stylesheet" href="/css/styles.css"><link rel="stylesheet" href="/css/p4.css"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"></head><body data-page="track-ride"><header class="nav"><div class="container nav-inner"><a class="brand" href="/"><span class="brand-mark">✦</span>aster<span style="color:var(--accent)">cab</span></a><nav class="nav-links"><a href="/passenger-dashboard.html">Dashboard</a><a href="/track-ride.html">Track</a><a href="/split-fare.html">Split fare</a><a href="/sos.html">SOS</a><a href="/lost-found.html">Lost & Found</a></nav><div class="nav-actions" data-nav-auth></div><button class="icon-btn mobile-toggle" data-menu-toggle aria-label="Open menu">☰</button></div></header><main class="page"><div class="container">
-<div class="page-head"><div><div class="eyebrow">Journey visibility</div><h1>Track your ride.</h1><p class="muted">See the latest driver position and ride progress.</p></div></div>
-<div class="safety-grid"><section class="card"><form id="track-form"><div class="form-group"><label for="ride-id">Ride ID</label><input class="input" id="ride-id" type="number" min="1" required placeholder="Enter your ride ID"></div><button class="btn btn-primary">Load ride</button></form><div id="track-status" class="notice">Enter a ride ID to begin.</div><div class="inline-row track-controls"><button class="btn btn-outline btn-sm" id="pause-tracking" type="button" disabled>Pause</button><button class="btn btn-outline btn-sm" id="resume-tracking" type="button" disabled>Resume</button><button class="btn btn-ghost btn-sm" id="restart-tracking" type="button" disabled>Restart</button></div><div class="coordinate-readout">Latitude: <strong id="driver-lat">—</strong> &nbsp; Longitude: <strong id="driver-lng">—</strong></div><div class="mini-map" id="ride-map"></div><div class="track-progress"><div class="inline-row"><strong>Journey progress</strong><span class="spacer" id="progress-label">Waiting</span></div><div class="progress-track"><span id="progress-fill"></span></div></div></section><aside class="card"><div class="eyebrow">Ride status</div><h2 id="ride-state">—</h2><p class="muted" id="last-updated">No location received yet.</p><div class="notice">The map refreshes every 3 seconds while this page is open. Driver GPS publishing must be enabled by P3.</div></aside></div>
-</div></main><footer class="footer"><div class="container footer-inner"><a class="brand" href="/">astercab</a><span>Thoughtful journeys, every day. © 2026 Astercab</span></div></footer><div class="toast-stack" aria-live="polite"></div><script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="/js/map.js"></script><script src="/js/api.js"></script><script src="/js/navbar.js"></script><script src="/js/p4.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Live ride tracking | Astercab</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/p4.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+  </head>
+  <body data-page="track-ride">
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation"></nav>
+        <div class="nav-actions" data-nav-auth></div>
+        <button
+          class="icon-btn mobile-toggle"
+          type="button"
+          data-menu-toggle
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </header>
+    <main class="page">
+      <div class="container">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">Journey visibility</div>
+            <h1>Track your ride.</h1>
+            <p class="muted">
+              See the latest driver position and ride progress.
+            </p>
+          </div>
+        </div>
+        <div class="safety-grid">
+          <section class="card">
+            <form id="track-form">
+              <div class="form-group">
+                <label for="ride-id">Ride ID</label>
+                <input
+                  class="input"
+                  id="ride-id"
+                  type="number"
+                  min="1"
+                  required
+                  placeholder="Enter your ride ID"
+                />
+              </div>
+              <button class="btn btn-primary">Load ride</button>
+            </form>
+            <div id="track-status" class="notice">
+              Enter a ride ID to begin.
+            </div>
+            <div class="inline-row track-controls">
+              <button
+                class="btn btn-outline btn-sm"
+                id="pause-tracking"
+                type="button"
+                disabled
+              >
+                Pause
+              </button>
+              <button
+                class="btn btn-outline btn-sm"
+                id="resume-tracking"
+                type="button"
+                disabled
+              >
+                Resume
+              </button>
+              <button
+                class="btn btn-ghost btn-sm"
+                id="restart-tracking"
+                type="button"
+                disabled
+              >
+                Restart
+              </button>
+            </div>
+            <div class="coordinate-readout">
+              Latitude:
+              <strong id="driver-lat">—</strong>
+              &nbsp; Longitude:
+              <strong id="driver-lng">—</strong>
+            </div>
+            <div class="mini-map" id="ride-map"></div>
+            <div class="track-progress">
+              <div class="inline-row">
+                <strong>Journey progress</strong>
+                <span class="spacer" id="progress-label">Waiting</span>
+              </div>
+              <div class="progress-track"><span id="progress-fill"></span></div>
+            </div>
+          </section>
+          <aside class="card">
+            <div class="eyebrow">Ride status</div>
+            <h2 id="ride-state">—</h2>
+            <p class="muted" id="last-updated">No location received yet.</p>
+            <div class="notice">
+              The map refreshes every 3 seconds while this page is open. Drivers
+              can share location from their Active trip page.
+            </div>
+          </aside>
+        </div>
+      </div>
+    </main>
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <span>Thoughtful journeys, every day. © 2026 Astercab</span>
+      </div>
+    </footer>
+    <div class="toast-stack" aria-live="polite"></div>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/p4.js"></script>
+  </body>
+</html>

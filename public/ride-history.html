@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ride History | Astercab</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/passenger.css" />
+  </head>
+
+  <body data-page="ride-history">
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation"></nav>
+        <div class="nav-actions" data-nav-auth></div>
+        <button
+          class="icon-btn mobile-toggle"
+          type="button"
+          data-menu-toggle
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="container" data-page="ride-history">
+      <div class="eyebrow">Your trips</div>
+
+      <h1>Ride history</h1>
+
+      <p>A record of your completed and upcoming rides.</p>
+
+      <div class="grid">
+        <section class="card span-4">
+          <div class="muted">Total money spent</div>
+
+          <div class="stat" id="history-spent">₹0</div>
+        </section>
+
+        <section class="card span-4">
+          <div class="muted">Completed rides</div>
+
+          <div class="stat" id="history-count">0</div>
+        </section>
+
+        <section class="card span-4">
+          <div class="muted">Upcoming rides</div>
+
+          <div class="stat" id="upcoming-count">0</div>
+        </section>
+
+        <section class="card span-12">
+          <div class="row">
+            <h2>All rides</h2>
+
+            <span class="pill">Your saved bookings</span>
+          </div>
+
+          <div id="history-table"></div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <span>Thoughtful journeys, every day. © 2026 Astercab</span>
+      </div>
+    </footer>
+
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/passenger.js"></script>
+  </body>
+</html>
