@@ -1,0 +1,12 @@
+
+.safety-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(270px,1fr);gap:22px;align-items:start}
+.safety-grid .card{min-width:0}.safety-grid textarea{resize:vertical}
+#split-qr{margin-top:18px}.report-item{border:1px solid var(--line);border-radius:13px;padding:17px;margin:12px 0;background:#fff}
+.report-item p{margin:7px 0}.report-item textarea{margin:10px 0}.report-meta{font-size:.8rem;color:var(--muted)}
+.map-marker-label{font-weight:700}
+@media(max-width:800px){.safety-grid{grid-template-columns:1fr}.nav-links{display:none}.page-head{align-items:flex-start;flex-direction:column}}
+
+.track-progress{margin-top:18px}.progress-track{height:9px;border-radius:20px;background:#e8eeee;overflow:hidden;margin-top:9px}.progress-track span{display:block;width:0;height:100%;background:#8ba92b;transition:width .35s}
+
+.track-controls{margin:12px 0}.coordinate-readout{font-size:.82rem;color:var(--muted);margin:8px 0 14px}.coordinate-readout strong{color:var(--ink);font-variant-numeric:tabular-nums}
+#ride-map .leaflet-marker-icon{transition:transform 2.5s linear}

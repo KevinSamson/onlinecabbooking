@@ -1,0 +1,4 @@
+Add this line to routes/index.js with the other router registrations:
+router.use('/', require('./safety'));
+
+Coordinate this shared-file change with P1 before committing.
