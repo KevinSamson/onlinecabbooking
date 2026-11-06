@@ -35,7 +35,8 @@ router.get("/dashboard", async (req, res, next) => {
     );
     const [[daily]] = await db.execute(
       `SELECT v.id, v.make, v.model, v.color, v.plate_number, v.category
-      FROM driver_daily_vehicles d JOIN vehicles v ON v.id=d.vehicle_id WHERE d.driver_id=? AND d.service_date=CURDATE()`,
+      FROM driver_daily_vehicles d JOIN vehicles v ON v.id=d.vehicle_id
+      WHERE d.driver_id=? AND d.service_date=CURDATE() AND v.status='approved'`,
       [req.user.id],
     );
     const [[stats]] = await db.execute(
@@ -47,19 +48,30 @@ router.get("/dashboard", async (req, res, next) => {
       "SELECT COUNT(*) AS active_trips FROM rides WHERE driver_id=? AND status IN ('accepted','arriving','in_progress')",
       [req.user.id],
     );
-    const [[requests]] = await db.execute(
-      `SELECT COUNT(*) AS pending_requests FROM rides r
-      WHERE r.status='requested' AND r.vehicle_category=? AND (r.scheduled_at IS NULL OR r.scheduled_at<=UTC_TIMESTAMP())
-      AND NOT EXISTS (SELECT 1 FROM driver_ride_declines x WHERE x.ride_id=r.id AND x.driver_id=?)`,
-      [daily?.category || "", req.user.id],
-    );
+    let pendingRequests = 0;
+    if (
+      presence?.is_online &&
+      req.user.status === "active" &&
+      verification?.status === "approved" &&
+      daily
+    ) {
+      const [[requests]] = await db.execute(
+        `SELECT COUNT(*) AS pending_requests FROM rides r
+        WHERE r.status='requested' AND r.vehicle_category=?
+        AND (r.scheduled_at IS NULL OR r.scheduled_at<=UTC_TIMESTAMP())
+        AND (r.vehicle_id IS NULL OR r.vehicle_id=?)
+        AND NOT EXISTS (SELECT 1 FROM driver_ride_declines x WHERE x.ride_id=r.id AND x.driver_id=?)`,
+        [daily.category, daily.id, req.user.id],
+      );
+      pendingRequests = Number(requests.pending_requests);
+    }
     ok(res, "Driver dashboard loaded.", {
       verification: verification || null,
       is_online: Boolean(presence?.is_online),
       daily_vehicle: daily || null,
       ...stats,
       ...active,
-      ...requests,
+      pending_requests: pendingRequests,
     });
   } catch (e) {
     next(e);
@@ -227,7 +239,8 @@ router.get("/requests", async (req, res, next) => {
     if (!presence?.is_online)
       return ok(res, "Go online to receive requests.", { items: [] });
     const [[daily]] = await db.execute(
-      `SELECT vehicle_id FROM driver_daily_vehicles WHERE driver_id=? AND service_date=CURDATE()`,
+      `SELECT d.vehicle_id FROM driver_daily_vehicles d JOIN vehicles v ON v.id=d.vehicle_id
+      WHERE d.driver_id=? AND d.service_date=CURDATE() AND v.status='approved'`,
       [req.user.id],
     );
     if (!daily) return ok(res, "Select your vehicle for today.", { items: [] });

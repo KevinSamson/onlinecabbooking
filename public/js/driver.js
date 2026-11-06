@@ -84,6 +84,22 @@ document.addEventListener("DOMContentLoaded", () => {
   if ($("#driver-title")) $("#driver-title").textContent = title;
   const icon = () => window.lucide?.createIcons();
   let locationWatch = null;
+  let availabilityOnline = null;
+  let availabilityUpdating = false;
+  const renderAvailability = (online) => {
+    availabilityOnline = Boolean(online);
+    $("#driver-online").textContent = availabilityOnline ? "Online" : "Offline";
+    const button = $("#availability-toggle");
+    button.textContent = availabilityOnline ? "Go Offline" : "Go Online";
+    button.disabled = availabilityUpdating;
+  };
+  const showAvailabilityUnavailable = () => {
+    availabilityOnline = null;
+    $("#driver-online").textContent = "Unavailable";
+    const button = $("#availability-toggle");
+    button.textContent = "Refresh to retry";
+    button.disabled = true;
+  };
   const vehicleLabel = (v) =>
     v
       ? `${esc(v.make)} ${esc(v.model)} · ${esc(v.plate_number)}`
@@ -95,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#driver-verification").innerHTML = badge(
       d.verification?.status || "pending",
     );
-    $("#driver-online").textContent = d.is_online ? "Online" : "Offline";
+    renderAvailability(d.is_online);
     $("#driver-vehicle").textContent = vehicleLabel(d.daily_vehicle);
     $("#stat-trips").textContent = Number(
       d.completed_trips || 0,
@@ -107,10 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#stat-requests").textContent = Number(
       d.pending_requests || 0,
     ).toLocaleString("en-IN");
-    $("#availability-toggle").textContent = d.is_online
-      ? "Go offline"
-      : "Go online";
-    $("#availability-toggle").dataset.online = String(!d.is_online);
     $("#driver-notice").innerHTML =
       d.verification?.status !== "approved"
         ? /* HTML */ `
@@ -431,22 +443,45 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   });
   if (page === "driver-dashboard") {
-    dashboard().catch((e) => toast(e.message, "error"));
-    $("#availability-toggle").addEventListener("click", (e) =>
-      run(
-        async () => {
-          const online = e.currentTarget.dataset.online === "true";
-          await CabAPI.request("/driver/availability", {
-            method: "PATCH",
-            body: { is_online: online },
-          });
+    dashboard().catch((error) => {
+      showAvailabilityUnavailable();
+      toast(error.message, "error");
+    });
+    $("#availability-toggle").addEventListener("click", async (event) => {
+      if (availabilityUpdating || availabilityOnline === null) return;
+      const button = event.currentTarget;
+      const goOnline = !availabilityOnline;
+      availabilityUpdating = true;
+      button.disabled = true;
+      button.textContent = "Updating…";
+      try {
+        const updated = await CabAPI.request("/driver/availability", {
+          method: "PATCH",
+          body: { is_online: goOnline },
+        });
+        renderAvailability(updated.is_online);
+        toast(updated.is_online ? "You are online." : "You are offline.");
+        try {
           await dashboard();
-          toast(online ? "You are online." : "You are offline.");
-        },
-        e.currentTarget,
-        "Updating…",
-      ),
-    );
+        } catch (error) {
+          toast(
+            `Availability changed, but the dashboard could not refresh: ${error.message}`,
+            "error",
+          );
+        }
+      } catch (error) {
+        try {
+          await dashboard();
+        } catch {
+          showAvailabilityUnavailable();
+        }
+        toast(error.message, "error");
+      } finally {
+        availabilityUpdating = false;
+        if (availabilityOnline === null) button.disabled = true;
+        else renderAvailability(availabilityOnline);
+      }
+    });
   }
   if (page === "driver-vehicles") {
     vehicles().catch((e) => toast(e.message, "error"));
