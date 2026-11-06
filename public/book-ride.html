@@ -194,18 +194,18 @@
               aria-live="polite"
             ></p>
 
-            <div class="field">
-              <label for="distance">Approx. distance (km)</label>
-
-              <input
-                class="input"
-                id="distance"
-                type="number"
-                min="1"
-                step="0.1"
-                value="10"
-                required
-              />
+            <div class="route-distance-card" aria-live="polite">
+              <span>Estimated road distance</span>
+              <strong id="route-distance">Choose pickup and destination</strong>
+              <p id="route-status" class="form-note"></p>
+              <button
+                class="btn btn-outline"
+                id="retry-route"
+                type="button"
+                hidden
+              >
+                Retry route
+              </button>
             </div>
 
             <div class="field">
@@ -219,12 +219,47 @@
               </select>
             </div>
 
-            <div class="notice">
-              Choose a suggested address or select a point on the map. Enter an
-              approximate road distance to calculate the fare.
+            <div class="schedule-choice">
+              <label for="schedule-later">
+                <input id="schedule-later" type="checkbox" />
+                <span>Schedule this ride for later?</span>
+              </label>
+              <p class="form-note">
+                Choose a future pickup time if you are planning ahead.
+              </p>
+              <div id="schedule-fields" class="schedule-fields" hidden>
+                <div class="form-grid">
+                  <div class="field">
+                    <label for="schedule-date">Pickup date</label>
+                    <input class="input" id="schedule-date" type="date" />
+                  </div>
+                  <div class="field">
+                    <label for="schedule-time">Pickup time</label>
+                    <input class="input" id="schedule-time" type="time" />
+                  </div>
+                </div>
+                <p
+                  id="schedule-validation"
+                  class="schedule-validation"
+                  role="status"
+                  aria-live="polite"
+                ></p>
+              </div>
             </div>
 
-            <button class="btn btn-primary" type="submit">Book ride</button>
+            <div class="notice">
+              Choose a suggested address or select a point on the map. Distance
+              and fare are calculated automatically from the driving route.
+            </div>
+
+            <button
+              class="btn btn-primary"
+              id="book-ride-submit"
+              type="submit"
+              disabled
+            >
+              Book Ride
+            </button>
           </form>
 
           <div id="booking-message"></div>

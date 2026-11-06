@@ -2,6 +2,7 @@ const express = require("express");
 const db = require("../config/db");
 const auth = require("../middleware/auth");
 const roles = require("../middleware/roles");
+const { roadRoute } = require("../utils/road-route");
 const router = express.Router();
 router.use(auth, roles("passenger"));
 
@@ -35,13 +36,24 @@ router.get("/fare-estimate", (req, res) => {
   return ok(res, "Fare estimates calculated.", { items });
 });
 
+router.post("/route", async (req, res) => {
+  try {
+    const route = await roadRoute(req.body.points);
+    return ok(res, "Road route calculated.", route);
+  } catch (error) {
+    const status = error instanceof TypeError ? 400 : 503;
+    return fail(res, status, error.message);
+  }
+});
+
 router.get("/", async (req, res, next) => {
   try {
     const [items] = await db.execute(
       `SELECT r.id, r.pickup_address, r.dropoff_address, r.pickup_lat, r.pickup_lng,
       r.dropoff_lat, r.dropoff_lng, r.estimated_distance_km, r.estimated_fare, r.final_fare,
       r.status, r.scheduled_at, r.requested_at, r.driver_id, u.full_name AS driver_name,
-      r.vehicle_category, v.make AS vehicle_make, v.model AS vehicle_model
+      r.vehicle_category, v.make AS vehicle_make, v.model AS vehicle_model,
+      EXISTS(SELECT 1 FROM fare_splits fs WHERE fs.ride_id = r.id) AS has_fare_split
       FROM rides r LEFT JOIN users u ON u.id=r.driver_id LEFT JOIN vehicles v ON v.id=r.vehicle_id
       WHERE r.passenger_id=? ORDER BY r.requested_at DESC, r.id DESC LIMIT 100`,
       [req.user.id],
@@ -55,7 +67,7 @@ router.get("/", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   const pickup = String(req.body.pickup_address || "").trim();
   const dropoff = String(req.body.dropoff_address || "").trim();
-  const distance = Number(req.body.distance_km);
+  let distance;
   const category = String(req.body.vehicle_category || "economy");
   const coords = [
     req.body.pickup_lat,
@@ -72,13 +84,8 @@ router.post("/", async (req, res, next) => {
     !validCoordinate(coords[3], 180)
   )
     return fail(res, 400, "Enter valid pickup and destination coordinates.");
-  if (
-    !Number.isFinite(distance) ||
-    distance <= 0 ||
-    distance > 1000 ||
-    !RATES[category]
-  )
-    return fail(res, 400, "Enter a valid distance and vehicle category.");
+  if (!RATES[category])
+    return fail(res, 400, "Choose a valid vehicle category.");
   const stops = req.body.stops || [];
   if (
     !Array.isArray(stops) ||
@@ -108,6 +115,25 @@ router.post("/", async (req, res, next) => {
     (!Number.isFinite(scheduledAt.getTime()) || scheduledAt <= new Date())
   )
     return fail(res, 400, "Choose a future pickup time.");
+  if (
+    stopCoordinates.length !== stops.length ||
+    stopCoordinates.some((point) => !point)
+  )
+    return fail(
+      res,
+      400,
+      "Choose each stop from the address suggestions or map.",
+    );
+  try {
+    const route = await roadRoute([
+      [Number(coords[0]), Number(coords[1])],
+      ...stopCoordinates.map((point) => [Number(point[0]), Number(point[1])]),
+      [Number(coords[2]), Number(coords[3])],
+    ]);
+    distance = route.distance_km;
+  } catch (error) {
+    return fail(res, error instanceof TypeError ? 400 : 503, error.message);
+  }
   const fare =
     Math.round(
       (RATES[category].base + distance * RATES[category].perKm) * 100,

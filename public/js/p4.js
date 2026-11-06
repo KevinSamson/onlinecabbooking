@@ -155,9 +155,108 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (page === "split-fare") {
     if (!requireRole("passenger")) return;
+    const rideList = $("#split-ride-list");
+    const createButton = $("#create-split");
+    let selectedRideId = null;
+    let eligibleRideIds = new Set();
+    const loadEligibleRides = async () => {
+      rideList.innerHTML =
+        '<p class="loading">Loading your eligible rides…</p>';
+      createButton.disabled = true;
+      selectedRideId = null;
+      eligibleRideIds = new Set();
+      try {
+        const { items } = await CabAPI.request("/rides");
+        const eligible = items.filter(
+          (ride) =>
+            ride.status === "completed" &&
+            Number(ride.final_fare ?? ride.estimated_fare) > 0 &&
+            !ride.has_fare_split,
+        );
+        eligibleRideIds = new Set(eligible.map((ride) => Number(ride.id)));
+        if (!items.length) {
+          rideList.innerHTML =
+            '<p class="muted">You have no rides yet. Completed rides with a fare will appear here.</p>';
+          return;
+        }
+        if (!eligible.length) {
+          rideList.innerHTML =
+            '<p class="muted">No rides are ready to split. A ride must be completed, have a fare, and not already have a split.</p>';
+          return;
+        }
+        rideList.innerHTML = eligible
+          .map((ride) => {
+            const fare = Number(ride.final_fare ?? ride.estimated_fare);
+            return /* HTML */ `
+              <label class="ride-option">
+                <input
+                  type="radio"
+                  name="split-ride"
+                  value="${Number(ride.id)}"
+                />
+                <span class="ride-option-details">
+                  <strong>
+                    ${escapeHTML(ride.pickup_address)} →
+                    ${escapeHTML(ride.dropoff_address)}
+                  </strong>
+                  <span class="report-meta">
+                    ${escapeHTML(new Date(ride.scheduled_at || ride.requested_at).toLocaleString())}
+                    ·
+                    ${escapeHTML(ride.vehicle_category || "Vehicle not specified")}
+                    · ${escapeHTML(ride.status.replaceAll("_", " "))}
+                  </span>
+                  <strong>
+                    Fare:
+                    ₹${fare.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </strong>
+                </span>
+              </label>
+            `;
+          })
+          .join("");
+        const linkedRideId = Number(
+          new URLSearchParams(location.search).get("ride"),
+        );
+        if (eligibleRideIds.has(linkedRideId)) {
+          const linked = [
+            ...rideList.querySelectorAll('input[name="split-ride"]'),
+          ].find((input) => Number(input.value) === linkedRideId);
+          linked.checked = true;
+          linked.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      } catch (error) {
+        rideList.innerHTML = /* HTML */ `
+          <p class="muted">
+            Could not load your rides: ${escapeHTML(error.message)}
+          </p>
+          <button class="btn btn-outline" type="button" id="retry-split-rides">
+            Try again
+          </button>
+        `;
+      }
+    };
+    rideList.addEventListener("change", (event) => {
+      if (!event.target.matches('input[name="split-ride"]')) return;
+      const rideId = Number(event.target.value);
+      selectedRideId = eligibleRideIds.has(rideId) ? rideId : null;
+      createButton.disabled = !selectedRideId;
+      rideList.querySelectorAll(".ride-option").forEach((option) => {
+        option.classList.toggle(
+          "is-selected",
+          option.querySelector("input").checked,
+        );
+      });
+    });
+    rideList.addEventListener("click", (event) => {
+      if (event.target.closest("#retry-split-rides")) loadEligibleRides();
+    });
     $("#split-form").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const button = e.submitter;
+      if (!selectedRideId || !eligibleRideIds.has(selectedRideId)) {
+        toast("Select an eligible completed ride first.", "error");
+        return;
+      }
+      const button = createButton;
       setBusy(button, true, "Creating…");
       try {
         const invite_emails = $("#emails")
@@ -166,7 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
           .filter(Boolean);
         const data = await CabAPI.request("/fare-splits", {
           method: "POST",
-          body: { ride_id: Number($("#ride-id").value), invite_emails },
+          body: { ride_id: selectedRideId, invite_emails },
         });
         const url = `${location.origin}${data.invitation_path}`;
         $("#split-result").innerHTML = /* HTML */ `
@@ -176,6 +275,12 @@ document.addEventListener("DOMContentLoaded", () => {
             <strong>₹${Number(data.total_amount).toFixed(2)}</strong>
           </p>
           <p>Members: ${data.member_count}</p>
+          <div id="split-members" class="report-item">
+            Loading participant shares…
+          </div>
+          <button class="btn btn-outline" id="refresh-split" type="button">
+            Refresh payment status
+          </button>
           <label>Invitation link</label>
           <div class="inline-row">
             <input
@@ -202,12 +307,41 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         if (window.QRCode)
           new QRCode($("#split-qr"), { text: url, width: 180, height: 180 });
+        const refreshSplit = async () => {
+          try {
+            const details = await CabAPI.request(`/fare-splits/${data.id}`);
+            $("#split-members").innerHTML = /* HTML */ `
+              <strong>Split status: ${escapeHTML(details.status)}</strong>
+              <ul>
+                ${details.members
+                  .map(
+                    (member) => /* HTML */ `
+                      <li>
+                        ${escapeHTML(member.email)} —
+                        ₹${Number(member.amount).toFixed(2)}
+                        (${escapeHTML(member.status)})
+                      </li>
+                    `,
+                  )
+                  .join("")}
+              </ul>
+            `;
+          } catch (error) {
+            $("#split-members").textContent =
+              `Could not load participant shares: ${error.message}`;
+          }
+        };
+        $("#refresh-split").addEventListener("click", refreshSplit);
+        await refreshSplit();
+        await loadEligibleRides();
       } catch (err) {
         showError(err);
       } finally {
         setBusy(button, false);
+        button.disabled = !selectedRideId;
       }
     });
+    loadEligibleRides();
   }
 
   if (page === "join-split") {
@@ -318,7 +452,93 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (page === "lost-found") {
     if (!requireRole("passenger")) return;
-    const load = async () => {
+    const rideList = $("#lost-ride-list");
+    const submitButton = $("#submit-lost-report");
+    let selectedRideId = null;
+    let eligibleRideIds = new Set();
+    const loadRides = async () => {
+      rideList.innerHTML = '<p class="loading">Loading your recent rides…</p>';
+      submitButton.disabled = true;
+      selectedRideId = null;
+      eligibleRideIds = new Set();
+      try {
+        const { items } = await CabAPI.request("/rides");
+        const eligible = items.filter((ride) =>
+          ["in_progress", "completed"].includes(ride.status),
+        );
+        eligibleRideIds = new Set(eligible.map((ride) => Number(ride.id)));
+        if (!items.length) {
+          rideList.innerHTML =
+            '<p class="muted">You have no rides yet. Once you have taken a trip, you can report a lost item here.</p>';
+          return;
+        }
+        if (!eligible.length) {
+          rideList.innerHTML =
+            '<p class="muted">None of your recent rides are eligible yet. A lost-item report must be linked to a ride in progress or a completed ride.</p>';
+          return;
+        }
+        rideList.innerHTML = eligible
+          .map(
+            (ride) => /* HTML */ `
+              <label class="ride-option">
+                <input
+                  type="radio"
+                  name="selected-ride"
+                  value="${Number(ride.id)}"
+                />
+                <span class="ride-option-details">
+                  <strong>
+                    ${escapeHTML(ride.pickup_address)} →
+                    ${escapeHTML(ride.dropoff_address)}
+                  </strong>
+                  <span class="report-meta">
+                    ${escapeHTML(new Date(ride.scheduled_at || ride.requested_at).toLocaleString())}
+                    ·
+                    ${escapeHTML(ride.vehicle_category || "Vehicle not specified")}
+                    · ${escapeHTML(ride.status.replaceAll("_", " "))}
+                  </span>
+                </span>
+              </label>
+            `,
+          )
+          .join("");
+        const linkedRideId = Number(
+          new URLSearchParams(location.search).get("ride"),
+        );
+        if (eligibleRideIds.has(linkedRideId)) {
+          const linked = [
+            ...rideList.querySelectorAll('input[name="selected-ride"]'),
+          ].find((input) => Number(input.value) === linkedRideId);
+          linked.checked = true;
+          linked.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      } catch (error) {
+        rideList.innerHTML = /* HTML */ `
+          <p class="muted">
+            Could not load your rides: ${escapeHTML(error.message)}
+          </p>
+          <button class="btn btn-outline" type="button" id="retry-lost-rides">
+            Try again
+          </button>
+        `;
+      }
+    };
+    rideList.addEventListener("change", (event) => {
+      if (!event.target.matches('input[name="selected-ride"]')) return;
+      const rideId = Number(event.target.value);
+      selectedRideId = eligibleRideIds.has(rideId) ? rideId : null;
+      submitButton.disabled = !selectedRideId;
+      rideList.querySelectorAll(".ride-option").forEach((option) => {
+        option.classList.toggle(
+          "is-selected",
+          option.querySelector("input").checked,
+        );
+      });
+    });
+    rideList.addEventListener("click", (event) => {
+      if (event.target.closest("#retry-lost-rides")) loadRides();
+    });
+    const loadReports = async () => {
       try {
         const { items } = await CabAPI.request("/lost-found/mine");
         $("#my-reports").innerHTML = items.length
@@ -326,7 +546,7 @@ document.addEventListener("DOMContentLoaded", () => {
               .map(
                 (r) => /* HTML */ `
                   <article class="report-item">
-                    <strong>Report #${r.id} · Ride #${r.ride_id}</strong>
+                    <strong>Report #${r.id}</strong>
                     <span class="badge badge-${r.status}">
                       ${escapeHTML(r.status)}
                     </span>
@@ -354,26 +574,36 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     $("#lost-form").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const button = e.submitter;
+      if (!selectedRideId || !eligibleRideIds.has(selectedRideId)) {
+        toast("Select an eligible ride before submitting.", "error");
+        return;
+      }
+      const button = submitButton;
       setBusy(button, true, "Submitting…");
       try {
         await CabAPI.request("/lost-found", {
           method: "POST",
           body: {
-            ride_id: Number($("#ride-id").value),
+            ride_id: selectedRideId,
             description: $("#description").value,
           },
         });
         toast("Report submitted.");
         $("#lost-form").reset();
-        await load();
+        selectedRideId = null;
+        rideList.querySelectorAll(".ride-option").forEach((option) => {
+          option.classList.remove("is-selected");
+        });
+        await loadReports();
       } catch (err) {
         showError(err);
       } finally {
         setBusy(button, false);
+        button.disabled = !selectedRideId;
       }
     });
-    load();
+    loadRides();
+    loadReports();
   }
 
   if (page === "admin-care-desk") {

@@ -409,6 +409,8 @@ router.post("/lost-found", allow("passenger"), async (req, res, next) => {
     const ride = await getRide(rideId);
     if (!ride || Number(ride.passenger_id) !== Number(req.user.id))
       return fail(res, 404, "Your ride was not found.");
+    if (!["in_progress", "completed"].includes(ride.status))
+      return fail(res, 409, "Choose a ride in progress or a completed ride.");
     if (description.length < 5 || description.length > 2000)
       return fail(res, 400, "Describe the lost item in 5–2000 characters.");
     const [result] = await db.execute(

@@ -44,14 +44,19 @@
           <section class="card">
             <form id="split-form">
               <div class="form-group">
-                <label for="ride-id">Completed ride ID</label>
-                <input
-                  class="input"
-                  id="ride-id"
-                  type="number"
-                  min="1"
-                  required
-                />
+                <h2 class="ride-option-heading" id="split-ride-heading">
+                  Choose a completed ride
+                </h2>
+                <p class="muted">Select a ride to divide its fare.</p>
+                <div
+                  class="ride-option-list"
+                  id="split-ride-list"
+                  role="group"
+                  aria-labelledby="split-ride-heading"
+                  aria-live="polite"
+                >
+                  <p class="loading">Loading your eligible rides…</p>
+                </div>
               </div>
               <div class="form-group">
                 <label for="emails">Invitee email addresses</label>
@@ -66,7 +71,9 @@
                   Invitees must register using these email addresses.
                 </p>
               </div>
-              <button class="btn btn-primary">Create fare split</button>
+              <button class="btn btn-primary" id="create-split" disabled>
+                Create fare split
+              </button>
             </form>
           </section>
           <aside class="card" id="split-result">

@@ -43,14 +43,19 @@
           <section class="card">
             <form id="lost-form">
               <div class="form-group">
-                <label for="ride-id">Ride ID</label>
-                <input
-                  class="input"
-                  id="ride-id"
-                  type="number"
-                  min="1"
-                  required
-                />
+                <h2 class="ride-option-heading" id="lost-ride-heading">
+                  Choose your ride
+                </h2>
+                <p class="muted">Select the trip where you left your item.</p>
+                <div
+                  id="lost-ride-list"
+                  class="ride-option-list"
+                  role="group"
+                  aria-labelledby="lost-ride-heading"
+                  aria-live="polite"
+                >
+                  <p class="loading">Loading your recent rides…</p>
+                </div>
               </div>
               <div class="form-group">
                 <label for="description">Describe the item</label>
@@ -63,7 +68,9 @@
                   placeholder="Item, colour, approximate location in the cab…"
                 ></textarea>
               </div>
-              <button class="btn btn-primary">Submit report</button>
+              <button class="btn btn-primary" id="submit-lost-report" disabled>
+                Submit report
+              </button>
             </form>
           </section>
           <section class="card">

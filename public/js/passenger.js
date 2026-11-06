@@ -97,17 +97,6 @@ async function loadRides() {
       (r) => r.status === "requested" && r.scheduled_at,
     ).length;
 }
-async function createRide(fields) {
-  return CabAPI.request("/rides", { method: "POST", body: fields });
-}
-function coordinates(prefix = "") {
-  return {
-    pickup_lat: Number($(`${prefix}pickup-lat`).value),
-    pickup_lng: Number($(`${prefix}pickup-lng`).value),
-    dropoff_lat: Number($(`${prefix}drop-lat`).value),
-    dropoff_lng: Number($(`${prefix}drop-lng`).value),
-  };
-}
 document.addEventListener("DOMContentLoaded", () => {
   const page = document.querySelector("main")?.dataset.page;
   if (!page) return;
@@ -179,33 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   if (page === "book-ride") CabBooking.init();
-  if (page === "schedule-ride") {
-    $("schedule-date").min = new Date().toLocaleDateString("en-CA");
-    $("schedule-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      try {
-        const when = new Date(
-          `${$("schedule-date").value}T${$("schedule-time").value}`,
-        );
-        const ride = await createRide({
-          pickup_address: $("schedule-pickup").value,
-          dropoff_address: $("schedule-drop").value,
-          ...coordinates("schedule-"),
-          distance_km: Number($("schedule-distance").value),
-          vehicle_category: $("schedule-vehicle").value,
-          scheduled_at: when.toISOString(),
-        });
-        $("schedule-message").innerHTML = /* HTML */ `
-          <div class="notice success">
-            Ride #${ride.id} scheduled for ${esc(date(when))}.
-            <a href="/ride-history.html">View rides</a>
-          </div>
-        `;
-      } catch (error) {
-        showError("schedule-message", error);
-      }
-    });
-  }
   if (page === "preferred-drivers") {
     const load = async () => {
       const [{ items }, { items: available }] = await Promise.all([

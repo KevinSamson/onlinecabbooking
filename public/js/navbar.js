@@ -23,11 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
       {
         label: "Book ride",
         href: "/book-ride.html",
-        paths: [
-          "/book-ride.html",
-          "/compare-fares.html",
-          "/schedule-ride.html",
-        ],
+        paths: ["/book-ride.html", "/compare-fares.html"],
       },
       {
         label: "Ride history",

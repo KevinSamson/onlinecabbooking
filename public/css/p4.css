@@ -30,6 +30,55 @@
   font-size: 0.8rem;
   color: var(--muted);
 }
+.ride-option-list {
+  display: grid;
+  gap: 10px;
+  max-height: 370px;
+  overflow-y: auto;
+  margin: 12px 0 20px;
+  padding: 2px;
+}
+.ride-option-heading {
+  margin-bottom: 5px;
+  font-size: 1.3rem;
+}
+.ride-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fff;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
+}
+.ride-option:hover,
+.ride-option:focus-within {
+  border-color: var(--green);
+}
+.ride-option.is-selected {
+  border-color: var(--green);
+  background: #f3f9d9;
+  box-shadow: 0 0 0 2px rgb(19 122 81 / 15%);
+}
+.ride-option input {
+  flex: none;
+  margin-top: 3px;
+  accent-color: var(--green);
+}
+.ride-option-details {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.ride-option-details strong {
+  color: var(--ink);
+}
 .map-marker-label {
   font-weight: 700;
 }

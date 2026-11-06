@@ -27,8 +27,46 @@ window.CabBooking = {
     let fareEstimate = null;
     let fareTimer;
     let fareVersion = 0;
+    let roadRoute = null;
+    let routeVersion = 0;
+    let routeTimer;
+    let routeController;
     let bookedRide = null;
     let geolocationVersion = 0;
+    const scheduleToggle = byId("schedule-later");
+    const scheduleDate = byId("schedule-date");
+    const scheduleTime = byId("schedule-time");
+    const submitButton = byId("book-ride-submit");
+    const localDate = (date) =>
+      `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    const localTime = (date) =>
+      `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+    const scheduledPickup = () => {
+      if (!scheduleToggle.checked) return null;
+      const earliest = new Date(Date.now() + 60_000);
+      scheduleDate.min = localDate(earliest);
+      if (scheduleDate.value === localDate(earliest))
+        scheduleTime.min = localTime(earliest);
+      else scheduleTime.removeAttribute("min");
+      let message = "";
+      let pickup = null;
+      if (!scheduleDate.value || !scheduleTime.value) {
+        message = "Choose both a pickup date and time.";
+      } else {
+        pickup = new Date(`${scheduleDate.value}T${scheduleTime.value}`);
+        if (!Number.isFinite(pickup.getTime()) || pickup < earliest) {
+          message = "Choose a future pickup date and time.";
+          pickup = null;
+        }
+      }
+      byId("schedule-validation").textContent = message;
+      return pickup;
+    };
+    const refreshSubmitState = () => {
+      const pickupTime = scheduleToggle.checked ? scheduledPickup() : null;
+      submitButton.disabled =
+        !roadRoute || (scheduleToggle.checked && !pickupTime);
+    };
 
     const selectedCategory = new URLSearchParams(location.search).get(
       "category",
@@ -146,6 +184,7 @@ window.CabBooking = {
 
     const renderSummary = () => {
       const summary = byId("booking-summary");
+      const pickupTime = scheduleToggle.checked ? scheduledPickup() : null;
       const entries = orderedKeys()
         .map((key) => [labelFor(key), fields.get(key).value.trim()])
         .filter(([, address]) => address);
@@ -159,12 +198,31 @@ window.CabBooking = {
       `;
       summary.className = "";
       summary.innerHTML = [
-        bookedRide ? row("Booking", `Ride #${bookedRide.id} confirmed`) : "",
+        bookedRide
+          ? row(
+              "Booking",
+              `Ride #${bookedRide.id} ${bookedRide.scheduled_at ? "scheduled" : "confirmed"}`,
+            )
+          : "",
         ...entries.map(([label, address]) =>
           row(label.charAt(0).toUpperCase() + label.slice(1), address),
         ),
         row("Vehicle", byId("vehicle").selectedOptions[0].textContent),
-        row("Approx. distance", `${byId("distance").value || "—"} km`),
+        pickupTime
+          ? row(
+              "Pickup time",
+              pickupTime.toLocaleString("en-IN", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              }),
+            )
+          : "",
+        roadRoute
+          ? row(
+              "Estimated road distance",
+              `${roadRoute.distance_km.toFixed(2)} km`,
+            )
+          : "",
         fareEstimate !== null || bookedRide
           ? row(
               "Estimated fare",
@@ -176,7 +234,7 @@ window.CabBooking = {
     const refreshFare = () => {
       clearTimeout(fareTimer);
       const version = ++fareVersion;
-      const distance = Number(byId("distance").value);
+      const distance = roadRoute?.distance_km;
       if (!Number.isFinite(distance) || distance <= 0) {
         fareEstimate = null;
         renderSummary();
@@ -234,14 +292,15 @@ window.CabBooking = {
           markers.delete(key);
         }
       }
-      const route = orderedKeys()
+      const locations = orderedKeys()
         .map((key) => points.get(key))
         .filter(Boolean)
         .map((point) => [point.lat, point.lng]);
-      if (route.length > 1) {
-        if (routeLine) routeLine.setLatLngs(route);
+      if (roadRoute) {
+        const line = roadRoute.geometry.map(([lng, lat]) => [lat, lng]);
+        if (routeLine) routeLine.setLatLngs(line);
         else
-          routeLine = L.polyline(route, { color: "#7a9f23", weight: 4 }).addTo(
+          routeLine = L.polyline(line, { color: "#7a9f23", weight: 5 }).addTo(
             map,
           );
         map.fitBounds(routeLine.getBounds(), {
@@ -252,10 +311,80 @@ window.CabBooking = {
         map.removeLayer(routeLine);
         routeLine = null;
       }
-      if (route.length === 1 && focusKey) {
+      if (locations.length === 1 && focusKey) {
         const point = points.get(focusKey);
         if (point) map.setView([point.lat, point.lng], 15);
+      } else if (!roadRoute && locations.length > 1 && focusKey) {
+        map.fitBounds(locations, { padding: [35, 35], maxZoom: 15 });
       }
+    };
+    const routePoints = () => {
+      if (!points.has("pickup") || !points.has("dropoff")) return null;
+      const activeStops = stopKeys.filter((key) =>
+        fields.get(key).value.trim(),
+      );
+      if (activeStops.some((key) => !points.has(key))) return null;
+      return ["pickup", ...activeStops, "dropoff"].map((key) => {
+        const point = points.get(key);
+        return [point.lat, point.lng];
+      });
+    };
+    const updateRoute = (immediate = false) => {
+      clearTimeout(routeTimer);
+      routeController?.abort();
+      const version = ++routeVersion;
+      roadRoute = null;
+      fareEstimate = null;
+      ++fareVersion;
+      clearTimeout(fareTimer);
+      submitButton.disabled = true;
+      byId("retry-route").hidden = true;
+      updateMap();
+      renderSummary();
+      const locations = routePoints();
+      if (!locations) {
+        byId("route-distance").textContent = "Choose pickup and destination";
+        byId("route-status").textContent = stopKeys.some(
+          (key) => fields.get(key).value.trim() && !points.has(key),
+        )
+          ? "Choose each stop from the suggestions or map."
+          : "";
+        return;
+      }
+      byId("route-distance").textContent = "Calculating route...";
+      byId("route-status").textContent =
+        "Finding the driving route along roads.";
+      routeTimer = setTimeout(
+        async () => {
+          const controller = new AbortController();
+          routeController = controller;
+          try {
+            const result = await CabAPI.request("/rides/route", {
+              method: "POST",
+              body: { points: locations },
+              signal: controller.signal,
+            });
+            if (version !== routeVersion) return;
+            roadRoute = result;
+            byId("route-distance").textContent =
+              `${result.distance_km.toFixed(2)} km`;
+            byId("route-status").textContent =
+              "Driving route calculated with OSRM.";
+            refreshSubmitState();
+            updateMap();
+            renderSummary();
+            refreshFare();
+          } catch (error) {
+            if (version !== routeVersion || error.name === "AbortError") return;
+            byId("route-distance").textContent = "Route unavailable";
+            byId("route-status").textContent =
+              `${error.message} Check your locations and retry.`;
+            byId("retry-route").hidden = false;
+            renderSummary();
+          }
+        },
+        immediate ? 0 : 400,
+      );
     };
     const selectTarget = (key) => {
       selectedTarget = key;
@@ -297,6 +426,7 @@ window.CabBooking = {
       hideSuggestions(key);
       updateMap(key);
       renderSummary();
+      updateRoute();
       notice(`${labelFor(key)} selected: ${address}`);
     };
     const selectFeature = (key, feature) => {
@@ -317,6 +447,7 @@ window.CabBooking = {
       fields.get(key).value = "";
       renderSummary();
       updateMap(key);
+      updateRoute();
       notice(`Finding the address for your ${labelFor(key)}...`);
       const cacheKey = `${lat.toFixed(5)},${lng.toFixed(5)}`;
       try {
@@ -390,6 +521,7 @@ window.CabBooking = {
         points.delete(key);
         updateMap();
         renderSummary();
+        updateRoute();
         searchAddress(key);
       });
       input.addEventListener("keydown", (event) => {
@@ -499,20 +631,50 @@ window.CabBooking = {
         modeButton,
         byId("map-mode-controls").lastElementChild,
       );
+      updateRoute();
       byId(key).focus();
     });
-    byId("distance").addEventListener("input", () => {
-      invalidateBooking();
-      renderSummary();
-      refreshFare();
-    });
+    byId("retry-route").addEventListener("click", () => updateRoute(true));
     byId("vehicle").addEventListener("change", () => {
       invalidateBooking();
       renderSummary();
       refreshFare();
     });
+    scheduleToggle.addEventListener("change", () => {
+      invalidateBooking();
+      byId("schedule-fields").hidden = !scheduleToggle.checked;
+      scheduleDate.required = scheduleToggle.checked;
+      scheduleTime.required = scheduleToggle.checked;
+      submitButton.textContent = scheduleToggle.checked
+        ? "Schedule Ride"
+        : "Book Ride";
+      if (!scheduleToggle.checked) byId("schedule-validation").textContent = "";
+      refreshSubmitState();
+      renderSummary();
+    });
+    for (const input of [scheduleDate, scheduleTime]) {
+      const onScheduleChange = () => {
+        invalidateBooking();
+        refreshSubmitState();
+        renderSummary();
+      };
+      input.addEventListener("input", onScheduleChange);
+      input.addEventListener("change", onScheduleChange);
+    }
+    if (new URLSearchParams(location.search).get("schedule") === "1") {
+      scheduleToggle.checked = true;
+      scheduleToggle.dispatchEvent(new Event("change"));
+    }
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      const pickupTime = scheduledPickup();
+      if (scheduleToggle.checked && !pickupTime) {
+        (!scheduleDate.value || scheduleDate.value < scheduleDate.min
+          ? scheduleDate
+          : scheduleTime
+        ).focus();
+        return;
+      }
       for (const key of ["pickup", "dropoff"]) {
         if (!points.has(key)) {
           notice(
@@ -521,6 +683,10 @@ window.CabBooking = {
           fields.get(key).focus();
           return;
         }
+      }
+      if (!roadRoute) {
+        notice("Wait for a valid driving route before booking.");
+        return;
       }
       const stops = stopKeys
         .map((key) => ({
@@ -532,7 +698,7 @@ window.CabBooking = {
       const dropoff = points.get("dropoff");
       try {
         byId("booking-message").innerHTML =
-          '<div class="notice">Booking...</div>';
+          `<div class="notice">${scheduleToggle.checked ? "Scheduling..." : "Booking..."}</div>`;
         const ride = await CabAPI.request("/rides", {
           method: "POST",
           body: {
@@ -542,16 +708,17 @@ window.CabBooking = {
             pickup_lng: pickup.lng,
             dropoff_lat: dropoff.lat,
             dropoff_lng: dropoff.lng,
-            distance_km: Number(byId("distance").value),
+            distance_km: roadRoute.distance_km,
             vehicle_category: byId("vehicle").value,
             stops: stops.map((stop) => stop.address),
             stop_coordinates: stops.map((stop) =>
               stop.point ? [stop.point.lat, stop.point.lng] : null,
             ),
+            ...(pickupTime ? { scheduled_at: pickupTime.toISOString() } : {}),
           },
         });
         byId("booking-message").innerHTML = `
-          <div class="notice success">Ride #${ride.id} booked. <a href="/ride-history.html">View rides</a></div>
+          <div class="notice success">Ride #${ride.id} ${pickupTime ? "scheduled" : "booked"}. <a href="/ride-history.html">View rides</a></div>
         `;
         bookedRide = ride;
         renderSummary();
