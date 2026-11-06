@@ -452,17 +452,21 @@ document.addEventListener("DOMContentLoaded", () => {
     vehicles().catch((e) => toast(e.message, "error"));
     $("#vehicle-form").addEventListener("submit", (e) => {
       e.preventDefault();
+      const form = e.currentTarget;
+      const submitButton =
+        e.submitter || form.querySelector('button[type="submit"]');
+      const vehicle = Object.fromEntries(new FormData(form));
       run(
         async () => {
           await CabAPI.request("/driver/vehicles", {
             method: "POST",
-            body: Object.fromEntries(new FormData(e.currentTarget)),
+            body: vehicle,
           });
-          e.currentTarget.reset();
+          form.reset();
           toast("Vehicle submitted for approval.");
           await vehicles();
         },
-        e.currentTarget.querySelector("button[type=submit]"),
+        submitButton,
         "Submitting…",
       );
     });
