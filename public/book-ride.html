@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book a Ride | Astercab</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/passenger.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+  </head>
+
+  <body data-page="book-ride">
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation"></nav>
+        <div class="nav-actions" data-nav-auth></div>
+        <button
+          class="icon-btn mobile-toggle"
+          type="button"
+          data-menu-toggle
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="container" data-page="book-ride">
+      <div class="eyebrow">New booking</div>
+
+      <h1>Book your ride</h1>
+
+      <p>Add your route details and choose how you want to travel.</p>
+
+      <div class="grid">
+        <section class="card span-7">
+          <h2>Trip details</h2>
+
+          <form id="booking-form">
+            <div class="field location-field" data-location-field="pickup">
+              <label for="pickup">Pickup location</label>
+              <div class="location-entry">
+                <div class="location-search">
+                  <input
+                    class="input"
+                    id="pickup"
+                    required
+                    autocomplete="off"
+                    aria-autocomplete="list"
+                    aria-controls="pickup-suggestions"
+                    aria-expanded="false"
+                    placeholder="Search pickup address..."
+                  />
+                  <div
+                    class="location-suggestions"
+                    id="pickup-suggestions"
+                    role="listbox"
+                    hidden
+                  ></div>
+                </div>
+                <button
+                  class="btn btn-outline"
+                  type="button"
+                  data-select-map="pickup"
+                >
+                  Select on map
+                </button>
+              </div>
+              <button
+                class="location-current"
+                type="button"
+                id="use-current-location"
+              >
+                <i data-lucide="locate-fixed" size="17"></i>
+                Use my current location
+              </button>
+            </div>
+
+            <div id="stops-list"></div>
+            <button type="button" class="btn btn-outline" id="add-stop">
+              + Add another stop
+            </button>
+
+            <div class="field location-field" data-location-field="dropoff">
+              <label for="drop">Drop location</label>
+              <div class="location-entry">
+                <div class="location-search">
+                  <input
+                    class="input"
+                    id="drop"
+                    required
+                    autocomplete="off"
+                    aria-autocomplete="list"
+                    aria-controls="drop-suggestions"
+                    aria-expanded="false"
+                    placeholder="Search destination address..."
+                  />
+                  <div
+                    class="location-suggestions"
+                    id="drop-suggestions"
+                    role="listbox"
+                    hidden
+                  ></div>
+                </div>
+                <button
+                  class="btn btn-outline"
+                  type="button"
+                  data-select-map="dropoff"
+                >
+                  Select on map
+                </button>
+              </div>
+            </div>
+
+            <section
+              class="booking-map-section"
+              aria-labelledby="booking-map-title"
+              id="booking-map-section"
+              hidden
+            >
+              <h3 id="booking-map-title">Choose a location on the map</h3>
+              <p class="muted">
+                Select which location to place, then click the map.
+              </p>
+              <div
+                class="map-mode-controls"
+                id="map-mode-controls"
+                role="group"
+                aria-label="Map selection mode"
+              >
+                <button
+                  class="btn btn-primary"
+                  type="button"
+                  data-map-target="pickup"
+                  aria-pressed="true"
+                >
+                  Select pickup
+                </button>
+                <button
+                  class="btn btn-outline"
+                  type="button"
+                  data-map-target="dropoff"
+                  aria-pressed="false"
+                >
+                  Select destination
+                </button>
+              </div>
+              <div
+                id="booking-map"
+                class="booking-map"
+                aria-label="Select pickup and destination on the map"
+              ></div>
+              <p
+                id="map-status"
+                class="form-note"
+                role="status"
+                aria-live="polite"
+              >
+                Click the map to place your pickup pin.
+              </p>
+              <p class="location-credit">
+                Map ©
+                <a
+                  href="https://www.openstreetmap.org/copyright"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  OpenStreetMap contributors
+                </a>
+                . Address search by
+                <a
+                  href="https://photon.komoot.io/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Photon
+                </a>
+                .
+              </p>
+            </section>
+            <p
+              id="location-message"
+              class="location-message"
+              role="status"
+              aria-live="polite"
+            ></p>
+
+            <div class="route-distance-card" aria-live="polite">
+              <span>Estimated road distance</span>
+              <strong id="route-distance">Choose pickup and destination</strong>
+              <p id="route-status" class="form-note"></p>
+              <button
+                class="btn btn-outline"
+                id="retry-route"
+                type="button"
+                hidden
+              >
+                Retry route
+              </button>
+            </div>
+
+            <div class="field">
+              <label for="vehicle">Vehicle type</label>
+
+              <select class="select" id="vehicle">
+                <option value="economy">Economy</option>
+                <option value="comfort">Comfort</option>
+                <option value="premium">Premium</option>
+                <option value="xl">XL</option>
+              </select>
+            </div>
+
+            <div class="schedule-choice">
+              <label for="schedule-later">
+                <input id="schedule-later" type="checkbox" />
+                <span>Schedule this ride for later?</span>
+              </label>
+              <p class="form-note">
+                Choose a future pickup time if you are planning ahead.
+              </p>
+              <div id="schedule-fields" class="schedule-fields" hidden>
+                <div class="form-grid">
+                  <div class="field">
+                    <label for="schedule-date">Pickup date</label>
+                    <input class="input" id="schedule-date" type="date" />
+                  </div>
+                  <div class="field">
+                    <label for="schedule-time">Pickup time</label>
+                    <input class="input" id="schedule-time" type="time" />
+                  </div>
+                </div>
+                <p
+                  id="schedule-validation"
+                  class="schedule-validation"
+                  role="status"
+                  aria-live="polite"
+                ></p>
+              </div>
+            </div>
+
+            <div class="notice">
+              Choose a suggested address or select a point on the map. Distance
+              and fare are calculated automatically from the driving route.
+            </div>
+
+            <button
+              class="btn btn-primary"
+              id="book-ride-submit"
+              type="submit"
+              disabled
+            >
+              Book Ride
+            </button>
+          </form>
+
+          <div id="booking-message"></div>
+        </section>
+
+        <section class="card span-5 booking-summary-card">
+          <h2>Booking summary</h2>
+
+          <p>Review your trip before confirming.</p>
+
+          <div id="booking-summary" class="empty">
+            Your trip summary will appear here.
+          </div>
+
+          <a class="btn btn-outline" href="compare-fares.html">
+            Compare all fares
+          </a>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <span>Thoughtful journeys, every day. © 2026 Astercab</span>
+      </div>
+    </footer>
+
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/booking.js"></script>
+    <script src="/js/passenger.js"></script>
+  </body>
+</html>

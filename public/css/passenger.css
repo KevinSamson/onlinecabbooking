@@ -1,0 +1,461 @@
+/* Passenger page layouts use the shared Astercab colours and components. */
+main[data-page] {
+  padding-top: 48px;
+  padding-bottom: 85px;
+}
+
+main[data-page] h1 {
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  margin: 8px 0 15px;
+}
+
+main[data-page] h2 {
+  font-size: 1.35rem;
+  margin-bottom: 15px;
+}
+
+main[data-page] p {
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.span-4 {
+  grid-column: span 4;
+}
+.span-5 {
+  grid-column: span 5;
+}
+.span-6 {
+  grid-column: span 6;
+}
+.span-7 {
+  grid-column: span 7;
+}
+.span-8 {
+  grid-column: span 8;
+}
+.span-12 {
+  grid-column: span 12;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.stat {
+  font:
+    800 2rem Manrope,
+    sans-serif;
+  letter-spacing: -0.04em;
+  margin: 8px 0 2px;
+}
+
+.field {
+  display: grid;
+  gap: 7px;
+  margin: 15px 0;
+}
+
+.field label {
+  font-size: 0.83rem;
+  font-weight: 700;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: #eff5d9;
+  color: #536525;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.price {
+  font:
+    800 1.6rem Manrope,
+    sans-serif;
+  letter-spacing: -0.04em;
+}
+
+.ride-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.ride-item:last-child {
+  border-bottom: 0;
+}
+
+main[data-page="book-ride"] .grid {
+  align-items: start;
+}
+
+.booking-summary-card {
+  align-self: start;
+  max-height: min(70vh, 640px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.booking-summary-card .empty {
+  padding: 12px 0;
+  text-align: left;
+}
+
+.booking-summary-card .summary-row {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+
+.booking-summary-card .summary-row:last-child {
+  border-bottom: 0;
+}
+
+.booking-summary-card .summary-row span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.booking-summary-card .summary-row strong {
+  display: block;
+  margin-top: 3px;
+}
+
+.route-distance-card {
+  margin: 18px 0;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.route-distance-card > span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.route-distance-card > strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--green);
+  font-size: 1.15rem;
+}
+
+.route-distance-card .form-note {
+  margin: 5px 0 0;
+}
+
+.route-distance-card .btn {
+  margin-top: 10px;
+}
+
+.route-distance-card [hidden] {
+  display: none;
+}
+
+.schedule-choice {
+  margin: 20px 0;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.schedule-choice > label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.schedule-choice input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--green);
+}
+
+.schedule-choice > .form-note {
+  margin: 5px 0 0 28px;
+}
+
+.schedule-fields {
+  margin-top: 15px;
+  animation: schedule-appear 0.2s ease-out;
+}
+
+.schedule-fields[hidden] {
+  display: none;
+}
+
+.schedule-fields .field {
+  margin-bottom: 0;
+}
+
+.schedule-validation {
+  margin: 8px 0 0;
+  color: var(--red);
+  font-size: 0.88rem;
+}
+
+.schedule-validation:empty {
+  display: none;
+}
+
+@keyframes schedule-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.location-field {
+  margin-bottom: 18px;
+}
+
+.location-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.location-search {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.location-search .input {
+  width: 100%;
+}
+
+.location-entry > .btn {
+  flex: none;
+  white-space: nowrap;
+}
+
+.location-suggestions {
+  position: absolute;
+  z-index: 1001;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.location-suggestions[hidden],
+.booking-map-section[hidden],
+.location-message:empty {
+  display: none;
+}
+
+.location-suggestion {
+  display: block;
+  width: 100%;
+  padding: 11px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--white);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.location-suggestion:hover,
+.location-suggestion:focus-visible {
+  background: #eff5d9;
+  outline: none;
+}
+
+.location-suggestion-empty {
+  padding: 12px 14px;
+  color: var(--muted);
+}
+
+.location-current {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--green);
+  font-weight: 700;
+  text-align: left;
+}
+
+.location-current:hover {
+  text-decoration: underline;
+}
+
+.location-message {
+  margin: 10px 0;
+  color: var(--green);
+  font-size: 0.88rem;
+}
+
+.booking-map-section {
+  margin: 22px 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.booking-map-section h3 {
+  margin-bottom: 5px;
+}
+
+.booking-map-section .row {
+  align-items: flex-start;
+}
+
+.map-mode-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 17px 0 12px;
+}
+
+.booking-map {
+  height: 340px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #e7eeee;
+}
+
+.booking-pin {
+  display: grid;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(19, 38, 44, 0.35);
+}
+
+.booking-pin-pickup {
+  background: var(--navy);
+}
+
+.booking-pin-dropoff {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.booking-pin-stop {
+  background: var(--green);
+}
+
+#map-status {
+  margin: 10px 0 0;
+}
+
+.location-credit {
+  margin: 6px 0 0;
+  font-size: 0.75rem;
+}
+
+.location-credit a {
+  text-decoration: underline;
+}
+
+.ride-item a,
+main[data-page] .card p a {
+  color: #587d17;
+  font-weight: 800;
+}
+
+.ride-item button {
+  min-height: 30px;
+  padding: 4px 9px;
+  font-size: 0.75rem;
+}
+
+.notice.success {
+  background: #e4f6ec;
+  color: var(--green);
+}
+
+@media (max-width: 900px) {
+  .span-4,
+  .span-5,
+  .span-6,
+  .span-7,
+  .span-8 {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 700px) {
+  .booking-summary-card {
+    max-height: min(60vh, 520px);
+  }
+
+  .booking-map-section {
+    padding: 14px;
+  }
+
+  .location-entry > .btn {
+    width: auto;
+    padding: 12px 10px;
+    font-size: 0.8rem;
+  }
+
+  .booking-map {
+    height: 280px;
+  }
+  main[data-page] {
+    padding-top: 32px;
+    padding-bottom: 55px;
+  }
+
+  .span-4,
+  .span-5,
+  .span-6,
+  .span-7,
+  .span-8 {
+    grid-column: span 12;
+  }
+
+  .row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .ride-item {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .location-entry {
+    flex-wrap: wrap;
+  }
+
+  .location-entry > .btn {
+    width: 100%;
+  }
+}

@@ -1,1 +1,23 @@
-{"name":"online-cab-booking","version":"1.0.0","private":true,"description":"Online Cab Booking System shared foundation and P1 features","main":"server.js","scripts":{"start":"node server.js","dev":"node --watch server.js","check":"node --check server.js && node --check config/db.js && node --check middleware/auth.js && node --check middleware/roles.js && node --check routes/index.js && node --check routes/auth.js && node --check routes/verification.js && node --check routes/admin.js && node --check routes/emergency.js && node --check utils/geo.js"},"dependencies":{"bcryptjs":"^2.4.3","dotenv":"^16.4.5","express":"^4.21.2","jsonwebtoken":"^9.0.2","multer":"^2.3.0","mysql2":"^3.12.0"},"engines":{"node":">=18"}}
+{
+  "name": "online-cab-booking",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Online Cab Booking System shared foundation and P1 features",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "check": "for file in server.js config/*.js middleware/*.js routes/*.js utils/*.js public/js/*.js; do node --check \"$file\" || exit 1; done"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.3.0",
+    "mysql2": "^3.12.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS rides (
   passenger_id BIGINT UNSIGNED NOT NULL,
   driver_id BIGINT UNSIGNED NULL,
   vehicle_id BIGINT UNSIGNED NULL,
+  vehicle_category ENUM('economy','comfort','premium','xl') NOT NULL DEFAULT 'economy',
   pickup_address VARCHAR(255) NOT NULL,
   pickup_lat DECIMAL(10,7) NOT NULL,
   pickup_lng DECIMAL(10,7) NOT NULL,
@@ -161,6 +162,7 @@ CREATE TABLE IF NOT EXISTS fare_splits (
   ride_id BIGINT UNSIGNED NOT NULL UNIQUE,
   created_by BIGINT UNSIGNED NOT NULL,
   total_amount DECIMAL(10,2) NOT NULL,
+  invite_token CHAR(48) NULL UNIQUE,
   status ENUM('pending','settled','cancelled') NOT NULL DEFAULT 'pending',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -186,9 +188,59 @@ CREATE TABLE IF NOT EXISTS lost_found_reports (
   ride_id BIGINT UNSIGNED NOT NULL,
   reporter_id BIGINT UNSIGNED NOT NULL,
   description TEXT NOT NULL,
+  response TEXT NULL,
+  responded_by BIGINT UNSIGNED NULL,
+  responded_at TIMESTAMP NULL,
   status ENUM('open','found','closed') NOT NULL DEFAULT 'open',
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (ride_id) REFERENCES rides(id),
-  FOREIGN KEY (reporter_id) REFERENCES users(id)
+  FOREIGN KEY (reporter_id) REFERENCES users(id),
+  FOREIGN KEY (responded_by) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS ride_stops (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  ride_id BIGINT UNSIGNED NOT NULL,
+  stop_order TINYINT UNSIGNED NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  UNIQUE KEY uq_ride_stop (ride_id, stop_order),
+  FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS preferred_drivers (
+  passenger_id BIGINT UNSIGNED NOT NULL,
+  driver_id BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (passenger_id, driver_id),
+  FOREIGN KEY (passenger_id) REFERENCES users(id),
+  FOREIGN KEY (driver_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS driver_daily_vehicles (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  driver_id BIGINT UNSIGNED NOT NULL,
+  vehicle_id BIGINT UNSIGNED NOT NULL,
+  service_date DATE NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_driver_service_date (driver_id, service_date),
+  INDEX idx_daily_vehicle (vehicle_id, service_date),
+  FOREIGN KEY (driver_id) REFERENCES users(id),
+  FOREIGN KEY (vehicle_id) REFERENCES vehicles(id)
+);
+
+CREATE TABLE IF NOT EXISTS driver_presence (
+  driver_id BIGINT UNSIGNED PRIMARY KEY,
+  is_online BOOLEAN NOT NULL DEFAULT FALSE,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (driver_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS driver_ride_declines (
+  ride_id BIGINT UNSIGNED NOT NULL,
+  driver_id BIGINT UNSIGNED NOT NULL,
+  declined_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (ride_id, driver_id),
+  FOREIGN KEY (ride_id) REFERENCES rides(id) ON DELETE CASCADE,
+  FOREIGN KEY (driver_id) REFERENCES users(id) ON DELETE CASCADE
 );

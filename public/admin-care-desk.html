@@ -1,4 +1,67 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Customer care desk | Astercab</title><link rel="stylesheet" href="/css/styles.css"><link rel="stylesheet" href="/css/p4.css"></head><body data-page="admin-care-desk"><header class="nav"><div class="container nav-inner"><a class="brand" href="/"><span class="brand-mark">✦</span>aster<span style="color:var(--accent)">cab</span></a><nav class="nav-links"><a href="/passenger-dashboard.html">Dashboard</a><a href="/track-ride.html">Track</a><a href="/split-fare.html">Split fare</a><a href="/sos.html">SOS</a><a href="/lost-found.html">Lost & Found</a></nav><div class="nav-actions" data-nav-auth></div><button class="icon-btn mobile-toggle" data-menu-toggle aria-label="Open menu">☰</button></div></header><main class="page"><div class="container">
-<div class="page-head"><div><div class="eyebrow">Admin / customer care</div><h1>Lost & Found desk.</h1><p class="muted">Review passenger reports and record a response.</p></div><button class="btn btn-outline" id="refresh-reports">Refresh</button></div>
-<section class="card"><h2>Open SOS alerts</h2><div id="sos-alerts" class="loading">Loading alerts…</div></section><section class="card" style="margin-top:22px"><h2>Lost & Found reports</h2><div id="care-reports" class="loading">Loading reports…</div></section>
-</div></main><footer class="footer"><div class="container footer-inner"><a class="brand" href="/">astercab</a><span>Thoughtful journeys, every day. © 2026 Astercab</span></div></footer><div class="toast-stack" aria-live="polite"></div><script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script><script src="/js/api.js"></script><script src="/js/navbar.js"></script><script src="/js/p4.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Customer care desk | Astercab</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/p4.css" />
+  </head>
+  <body data-page="admin-care-desk">
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation"></nav>
+        <div class="nav-actions" data-nav-auth></div>
+        <button
+          class="icon-btn mobile-toggle"
+          type="button"
+          data-menu-toggle
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </header>
+    <main class="page">
+      <div class="container">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">Admin / customer care</div>
+            <h1>Lost & Found desk.</h1>
+            <p class="muted">Review passenger reports and record a response.</p>
+          </div>
+          <button class="btn btn-outline" id="refresh-reports">Refresh</button>
+        </div>
+        <section class="card">
+          <h2>Open SOS alerts</h2>
+          <div id="sos-alerts" class="loading">Loading alerts…</div>
+        </section>
+        <section class="card" style="margin-top: 22px">
+          <h2>Lost & Found reports</h2>
+          <div id="care-reports" class="loading">Loading reports…</div>
+        </section>
+      </div>
+    </main>
+    <footer class="footer">
+      <div class="container footer-inner">
+        <a class="brand" href="/" aria-label="Astercab home">
+          <span class="brand-mark"><i data-lucide="route" size="20"></i></span>
+          aster
+          <span class="brand-accent">cab</span>
+        </a>
+        <span>Thoughtful journeys, every day. © 2026 Astercab</span>
+      </div>
+    </footer>
+    <div class="toast-stack" aria-live="polite"></div>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/p4.js"></script>
+  </body>
+</html>
